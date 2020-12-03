@@ -71,6 +71,11 @@ export default {
         console.error(error.message);
       }
     },
+    /* グラフを削除 */
+    deleteChart: function(id) {
+      this.$emit("onRemoveSeries", id);
+      this.prefectures[id - 1].isChecked = false;
+    },
   },
 };
 </script>
