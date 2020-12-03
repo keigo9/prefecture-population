@@ -10,6 +10,9 @@
           type="checkbox"
           :id="prefecture.id"
           :checked="prefecture.isChecked"
+          @click="
+            swichChart(prefecture.id, prefecture.name, prefecture.isChecked)
+          "
         />
         {{ prefecture.name }}
       </label>
@@ -63,7 +66,7 @@ export default {
       try {
         const response = await this.fetchAPI(path);
         const population = response.data.result.data[0].data.map(
-          val => val["value"]
+          (val) => val["value"]
         );
         this.$emit("onAddSeries", id, name, population);
         this.prefectures[id - 1].isChecked = true;
@@ -76,6 +79,14 @@ export default {
       this.$emit("onRemoveSeries", id);
       this.prefectures[id - 1].isChecked = false;
     },
+    /* グラフの表示非表示を切り替え */
+    switchChart: function(id, name, isChecked) {
+      if (isChecked) {
+        this.deleteChart(id);
+      } else {
+        this.drawChart(id, name);
+      }
+    },
   },
 };
 </script>
@@ -83,10 +94,10 @@ export default {
 <style scoped>
 .cantainer {
   display: flex;
-  justify-content:center;
+  justify-content: center;
 }
 .checkbox {
   display: inline-block;
-  margin:5px 7px;
+  margin: 5px 7px;
 }
 </style>
