@@ -1,14 +1,19 @@
 <template>
-  <div>
-    <input type="checkbox" id="jack" value="Jack" v-model="checkedNames" />
-    <label for="jack">Jack</label>
-    <input type="checkbox" id="john" value="John" v-model="checkedNames" />
-    <label for="john">John</label>
-    <input type="checkbox" id="mike" value="Mike" v-model="checkedNames" />
-    <label for="mike">Mike</label>
-    <br />
-    <span>Checked names: {{ checkedNames }}</span>
-    <p @click="fetchApi">test</p>
+  <div class="caitainer">
+    <div
+      v-for="prefecture in prefectures"
+      :key="prefecture.id"
+      class="checkbox"
+    >
+      <label :for="prefecture.id">
+        <input
+          type="checkbox"
+          :id="prefecture.id"
+          :checked="prefecture.isChecked"
+        />
+        {{ prefecture.name }}
+      </label>
+    </div>
   </div>
 </template>
 
@@ -19,22 +24,50 @@ import api from "./Apikey.js";
 export default {
   data() {
     return {
-      checkedNames: [],
+      prefectures: [],
     };
   },
+  mounted() {
+    this.drawPrefectures();
+  },
   methods: {
-    // APIから県庁所在地データ取得 
-    fetchApi() {
+    // APIから県庁所在地データ取得
+    fetchApi(path) {
       const response = axios.get(
-        `https://opendata.resas-portal.go.jp/api/v1/prefectures`,
+        `https://opendata.resas-portal.go.jp/api/v1/${path}`,
         {
           headers: { "X-API-KEY": api.key },
         }
       );
-      return console.log(response);
+      return response;
+    },
+    // 県庁所在地を動的に表示
+    drawPrefectures: async function() {
+      const path = "prefectures";
+      try {
+        const response = await this.fetchApi(path);
+        this.prefectures = response.data.result.map((val) => {
+          return {
+            id: val["prefCode"],
+            name: val["prefName"],
+            isChecked: false,
+          };
+        });
+      } catch (error) {
+        console.log(error.massage);
+      }
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.cantainer {
+  display: flex;
+  justify-content:center;
+}
+.checkbox {
+  display: inline-block;
+  margin:5px 7px;
+}
+</style>
