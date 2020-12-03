@@ -11,7 +11,7 @@
           :id="prefecture.id"
           :checked="prefecture.isChecked"
           @click="
-            swichChart(prefecture.id, prefecture.name, prefecture.isChecked)
+            switchChart(prefecture.id, prefecture.name, prefecture.isChecked)
           "
         />
         {{ prefecture.name }}
@@ -64,7 +64,7 @@ export default {
     drawChart: async function(id, name) {
       const path = `population/composition/perYear?cityCode=-&prefCode=${id}`;
       try {
-        const response = await this.fetchAPI(path);
+        const response = await this.fetchApi(path);
         const population = response.data.result.data[0].data.map(
           (val) => val["value"]
         );
