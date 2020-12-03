@@ -57,6 +57,20 @@ export default {
         console.log(error.massage);
       }
     },
+    /* グラフを描画 */
+    drawChart: async function(id, name) {
+      const path = `population/composition/perYear?cityCode=-&prefCode=${id}`;
+      try {
+        const response = await this.fetchAPI(path);
+        const population = response.data.result.data[0].data.map(
+          val => val["value"]
+        );
+        this.$emit("onAddSeries", id, name, population);
+        this.prefectures[id - 1].isChecked = true;
+      } catch (error) {
+        console.error(error.message);
+      }
+    },
   },
 };
 </script>
